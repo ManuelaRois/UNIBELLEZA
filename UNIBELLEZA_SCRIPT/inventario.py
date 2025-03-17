@@ -1,4 +1,5 @@
 from datetime import datetime
+from _usuarios import usuarios  # Importar el diccionario de usuarios
 
 # Diccionario para almacenar el inventario con categorías
 inventario = {
@@ -25,23 +26,22 @@ inventario = {
         "esmalte rojo": {"Cantidad": 20, "Precio": 20, "Vencimiento": "N/A"},
         "esmalte nude": {"Cantidad": 18, "Precio": 25, "Vencimiento": "N/A"},
         "quitaesmalte": {"Cantidad": 15, "Precio": 15, "Vencimiento": "N/A"},
-        "lima de uñas": {"Cantidad": 25, "Precio": 10, "Vencimiento": "N/A"},}
+        "lima de uñas": {"Cantidad": 25, "Precio": 10, "Vencimiento": "N/A"}
     },
     "accesorios": {
-        "brocha para base": {"Cantidad": 10, "Precio": 35, "Vencimiento": "N/A"},},
+        "brocha para base": {"Cantidad": 10, "Precio": 35, "Vencimiento": "N/A"},
         "esponja de maquillaje": {"Cantidad": 15, "Precio": 20, "Vencimiento": "N/A"},
         "pinza para cejas": {"Cantidad": 8, "Precio": 15, "Vencimiento": "N/A"},
         "cepillo para pestañas": {"Cantidad": 10, "Precio": 12, "Vencimiento": "N/A"},
         "neceser de maquillaje": {"Cantidad": 5, "Precio": 100, "Vencimiento": "N/A"},
     }
-
-
+}
 
 # Historial de ventas
 historial_ventas = []
 
 # Registrar venta
-def registrar_venta(inventario):
+def registrar_venta():
     producto = input("Ingrese el nombre del producto vendido: ").lower()
     for categoria, productos in inventario.items():
         if producto in productos:
@@ -56,13 +56,23 @@ def registrar_venta(inventario):
                 productos[producto]["Cantidad"] -= cantidad_vendida
                 total = cantidad_vendida * productos[producto]["Precio"]
                 fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+                # Solicitar el correo del usuario que realiza la venta
+                correo_usuario = input("Ingrese el correo electrónico del usuario que realiza la venta: ")
+                if correo_usuario in usuarios:
+                    nombre_usuario = usuarios[correo_usuario]
+                else:
+                    nombre_usuario = "Usuario no registrado"
+
+                # Agregar el usuario al registro de ventas
                 historial_ventas.append({
                     "Producto": producto,
                     "Cantidad": cantidad_vendida,
                     "Total": total,
-                    "Fecha": fecha
+                    "Fecha": fecha,
+                    "Usuario": nombre_usuario
                 })
-                print(f"Venta registrada: {cantidad_vendida} x '{producto}' = ${total:.2f}")
+                print(f"Venta registrada: {cantidad_vendida} x '{producto}' = ${total:.2f} (Vendido por: {nombre_usuario})")
                 return
             except ValueError:
                 print("Cantidad inválida.")
@@ -76,8 +86,8 @@ def ver_historial_ventas():
         return
 
     print("\n--- Historial de Ventas ---")
-    print("{:<20} {:<10} {:<10} {:<20}".format("Producto", "Cantidad", "Total", "Fecha"))
+    print("{:<20} {:<10} {:<10} {:<20} {:<20}".format("Producto", "Cantidad", "Total", "Fecha", "Usuario"))
     for venta in historial_ventas:
-        print("{:<20} {:<10} {:<10.2f} {:<20}".format(
-            venta['Producto'], venta['Cantidad'], venta['Total'], venta['Fecha']
+        print("{:<20} {:<10} {:<10.2f} {:<20} {:<20}".format(
+            venta['Producto'], venta['Cantidad'], venta['Total'], venta['Fecha'], venta['Usuario']
         ))

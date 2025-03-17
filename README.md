@@ -57,4 +57,4 @@ python main.py
 
 ---
 
-💖 ¡Gracias por usar Unibelleza!
+💖 ¡Gracias por usar Unibelleza 💄!

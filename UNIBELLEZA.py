@@ -1,10 +1,8 @@
 
-import datetime
+from datetime import datetime
 
 # Diccionario para almacenar el inventario con categorías
-# Cada categoría tiene un conjunto de productos con cantidad y precio
 inventario = {
-
     "maquillaje": {
         "lapiz delineador": {"Cantidad": 7, "Precio": 40, "Vencimiento": "2025-08-15"},
         "paleta de sombras": {"Cantidad": 10, "Precio": 250, "Vencimiento": "2026-02-10"},
@@ -24,24 +22,22 @@ inventario = {
         "agua micelar": {"Cantidad": 18, "Precio": 50, "Vencimiento": "2026-08-05"},
         "aceite limpiador": {"Cantidad": 10, "Precio": 65, "Vencimiento": "2025-09-01"}
     },
-
-"uñas":{
-    "esmalte rojo": {"Cantidad": 20, "Precio": 20},
-    "esmalte nude": {"Cantidad": 18, "Precio": 25},
-    "quitaesmalte": {"Cantidad": 15, "Precio": 15},
-    "lima de uñas": {"Cantidad": 25, "Precio": 10}
-},
-"accesorios": {
-    "brocha para base": {"Cantidad": 10, "Precio": 35},
-    "esponja de maquillaje": {"Cantidad": 15, "Precio": 20},
-    "pinza para cejas": {"Cantidad": 8, "Precio": 15},
-    "cepillo para pestañas": {"Cantidad": 10, "Precio": 12},
-    "neceser de maquillaje": {"Cantidad": 5, "Precio": 100}
-}
-}
+    "uñas": {
+        "esmalte rojo": {"Cantidad": 20, "Precio": 20, "Vencimiento": "N/A"},
+        "esmalte nude": {"Cantidad": 18, "Precio": 25, "Vencimiento": "N/A"},
+        "quitaesmalte": {"Cantidad": 15, "Precio": 15, "Vencimiento": "N/A"},
+        "lima de uñas": {"Cantidad": 25, "Precio": 10, "Vencimiento": "N/A"},}
+    },
+    "accesorios": {
+        "brocha para base": {"Cantidad": 10, "Precio": 35, "Vencimiento": "N/A"},},
+        "esponja de maquillaje": {"Cantidad": 15, "Precio": 20, "Vencimiento": "N/A"},
+        "pinza para cejas": {"Cantidad": 8, "Precio": 15, "Vencimiento": "N/A"},
+        "cepillo para pestañas": {"Cantidad": 10, "Precio": 12, "Vencimiento": "N/A"},
+        "neceser de maquillaje": {"Cantidad": 5, "Precio": 100, "Vencimiento": "N/A"},
+    }
 
 
-# Diccionario para almacenar usuarios registrados (correo como clave y nombre como valor)
+# Diccionario para almacenar usuarios registrados
 usuarios = {}
 
 # REGISTRAR USUARIO
@@ -57,7 +53,7 @@ def registrar_usuario(usuarios):
 
 def ver_inventario(inventario, usuarios):
     """Muestra el inventario con fechas de vencimiento y aplica descuento si el usuario está registrado."""
-    hoy = datetime.today().date()
+    hoy = datetime.now().date()
     correo_usuario = input("Ingrese su correo electrónico (o presione Enter si no está registrado): ") 
     descuento = 0.10 if correo_usuario in usuarios else 0
 
@@ -72,6 +68,8 @@ def ver_inventario(inventario, usuarios):
                 fecha_venc = datetime.strptime(vencimiento, "%Y-%m-%d").date()
                 if fecha_venc < hoy:
                     continue  # Omitir productos vencidos
+            else:
+                vencimiento = "Sin vencimiento"
             print("{:<25} {:<10} {:>10.2f} {:>15}".format(producto, detalles['Cantidad'], precio_con_descuento, vencimiento))
     
     if descuento > 0:
@@ -152,6 +150,51 @@ def eliminar_producto(inventario):
             return
     print(f"El producto '{producto}' no existe en el inventario.")
 
+# Historial de ventas
+historial_ventas = []
+
+# Registrar venta
+def registrar_venta(inventario):
+    producto = input("Ingrese el nombre del producto vendido: ").lower()
+    for categoria, productos in inventario.items():
+        if producto in productos:
+            try:
+                cantidad_vendida = int(input("Ingrese la cantidad vendida: "))
+                if cantidad_vendida < 0:
+                    print("La cantidad vendida no puede ser negativa.")
+                    return
+                if cantidad_vendida > productos[producto]["Cantidad"]:
+                    print("No hay suficiente inventario para esta venta.")
+                    return
+                productos[producto]["Cantidad"] -= cantidad_vendida
+                total = cantidad_vendida * productos[producto]["Precio"]
+                fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                historial_ventas.append({
+                    "Producto": producto,
+                    "Cantidad": cantidad_vendida,
+                    "Total": total,
+                    "Fecha": fecha
+                })
+                print(f"Venta registrada: {cantidad_vendida} x '{producto}' = ${total:.2f}")
+                return
+            except ValueError:
+                print("Cantidad inválida.")
+                return
+    print("Producto no encontrado.")
+
+# Ver historial de ventas
+def ver_historial_ventas():
+    if not historial_ventas:
+        print("No hay ventas registradas.")
+        return
+
+    print("\n--- Historial de Ventas ---")
+    print("{:<20} {:<10} {:<10} {:<20}".format("Producto", "Cantidad", "Total", "Fecha"))
+    for venta in historial_ventas:
+        print("{:<20} {:<10} {:<10.2f} {:<20}".format(
+            venta['Producto'], venta['Cantidad'], venta['Total'], venta['Fecha']
+        ))
+
 # MOSTRAR MENÚ
 def mostrar_menu():
     print("\n--- Menú de Inventario ---")
@@ -162,7 +205,9 @@ def mostrar_menu():
     print("5. Eliminar producto")
     print("6. Buscar producto")
     print("7. Registrar usuario")
-    print("8. Salir")
+    print("8. Registrar venta")
+    print("9. Ver historial de ventas")
+    print("10. Salir")
 
 # DICCIONARIO DE FUNCIONES
 opciones = {
@@ -172,7 +217,9 @@ opciones = {
     '4': lambda: actualizar_precio(inventario),
     '5': lambda: eliminar_producto(inventario),
     '6': lambda: buscar_producto(inventario),
-    '7': lambda: registrar_usuario(usuarios)
+    '7': lambda: registrar_usuario(usuarios),
+    '8': lambda: registrar_venta(inventario),
+    '9': lambda: ver_historial_ventas()
 }
 
 # EJECUTAR MENÚ
@@ -180,7 +227,7 @@ def main():
     while True:
         mostrar_menu()
         opcion = input("\nSeleccione una opción: ")
-        if opcion == "8":
+        if opcion == "10":
             print("Saliendo del sistema...")
             break
         if opcion in opciones:

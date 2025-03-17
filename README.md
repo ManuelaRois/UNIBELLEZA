@@ -1,18 +1,17 @@
 # 💄 Unibelleza - Sistema de Inventario para Tienda de Maquillaje
-
-Unibelleza es un sistema de inventario para una tienda de maquillaje que permite registrar, buscar, actualizar y eliminar productos, así como gestionar usuarios.
-
+Unibelleza es un sistema de inventario para una tienda de maquillaje que permite registrar, buscar, actualizar y eliminar productos, así como gestionar usuarios y realizar ventas.
 ---
 
 ## 💖 **Características**
-✅ Registrar nuevos productos  
-✅ Ver el inventario de productos  
-✅ Actualizar cantidad y precio de productos  
+✅ Registrar nuevos productos
+✅ Ver el inventario de productos
+✅ Actualizar cantidad y precio de productos
 ✅ Consultar fechas de vencimiento de los productos
-✅ Eliminar productos del inventario  
-✅ Buscar productos por nombre  
-✅ Registrar nuevos usuarios  
-✅ Consultar el registro de ventas 
+✅ Eliminar productos del inventario
+✅ Buscar productos por nombre
+✅ Registrar nuevos usuarios
+✅ Registrar ventas y calcular total automáticamente
+✅ Ver historial de ventas
 
 ---
 
@@ -20,10 +19,10 @@ Unibelleza es un sistema de inventario para una tienda de maquillaje que permite
 📦 UNIBELLEZA
 ┣ 📂 inventario
 ┣ 📂 usuarios
-┣ 📂 tests
+┣ 📂 menu
 ┣ 📜 main.py
-┣ 📜 menu.py
-┗ 📜 README.md
+┣ 📜 setup.py
+┣ 📜 README.md
 
 ## 🛠️ **Instalación y configuración**
 1. Clona el repositorio:  

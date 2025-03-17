@@ -8,6 +8,7 @@ Unibelleza es un sistema de inventario para una tienda de maquillaje que permite
 ✅ Registrar nuevos productos  
 ✅ Ver el inventario de productos  
 ✅ Actualizar cantidad y precio de productos  
+✅ Consultar fechas de vencimiento de los productos
 ✅ Eliminar productos del inventario  
 ✅ Buscar productos por nombre  
 ✅ Registrar nuevos usuarios  

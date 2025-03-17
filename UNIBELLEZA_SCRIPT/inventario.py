@@ -1,5 +1,6 @@
 from datetime import datetime
 
+# Diccionario para almacenar el inventario con categorías
 inventario = {
     "maquillaje": {
         "lapiz delineador": {"Cantidad": 7, "Precio": 40, "Vencimiento": "2025-08-15"},
@@ -19,28 +20,64 @@ inventario = {
         "tonico facial": {"Cantidad": 12, "Precio": 55, "Vencimiento": "2026-04-10"},
         "agua micelar": {"Cantidad": 18, "Precio": 50, "Vencimiento": "2026-08-05"},
         "aceite limpiador": {"Cantidad": 10, "Precio": 65, "Vencimiento": "2025-09-01"}
+    },
+    "uñas": {
+        "esmalte rojo": {"Cantidad": 20, "Precio": 20, "Vencimiento": "N/A"},
+        "esmalte nude": {"Cantidad": 18, "Precio": 25, "Vencimiento": "N/A"},
+        "quitaesmalte": {"Cantidad": 15, "Precio": 15, "Vencimiento": "N/A"},
+        "lima de uñas": {"Cantidad": 25, "Precio": 10, "Vencimiento": "N/A"},}
+    },
+    "accesorios": {
+        "brocha para base": {"Cantidad": 10, "Precio": 35, "Vencimiento": "N/A"},},
+        "esponja de maquillaje": {"Cantidad": 15, "Precio": 20, "Vencimiento": "N/A"},
+        "pinza para cejas": {"Cantidad": 8, "Precio": 15, "Vencimiento": "N/A"},
+        "cepillo para pestañas": {"Cantidad": 10, "Precio": 12, "Vencimiento": "N/A"},
+        "neceser de maquillaje": {"Cantidad": 5, "Precio": 100, "Vencimiento": "N/A"},
     }
-}
 
-def ver_inventario(inventario, usuarios):
-    """Muestra el inventario con fechas de vencimiento y aplica descuento si el usuario está registrado."""
-    hoy = datetime.today().date()
-    correo_usuario = input("Ingrese su correo electrónico (o presione Enter si no está registrado): ") 
-    descuento = 0.10 if correo_usuario in usuarios else 0
 
-    print("\n--- Inventario ---")
+
+# Historial de ventas
+historial_ventas = []
+
+# Registrar venta
+def registrar_venta(inventario):
+    producto = input("Ingrese el nombre del producto vendido: ").lower()
     for categoria, productos in inventario.items():
-        print(f"\n📌 Categoría: {categoria.capitalize()}")
-        print("{:<25} {:<10} {:>10} {:>15}".format("Producto", "Cantidad", "$Precio", "Vencimiento"))
-        for producto, detalles in productos.items():
-            precio_con_descuento = detalles['Precio'] * (1 - descuento)
-            vencimiento = detalles.get("Vencimiento", "N/A")
-            if vencimiento != "N/A":
-                fecha_venc = datetime.strptime(vencimiento, "%Y-%m-%d").date()
-                if fecha_venc < hoy:
-                    continue  # Omitir productos vencidos
-            print("{:<25} {:<10} {:>10.2f} {:>15}".format(producto, detalles['Cantidad'], precio_con_descuento, vencimiento))
-    
-    if descuento > 0:
-        print("\n¡Se aplicó un descuento del 10% por estar registrado!🩷")
-    print("\nNota: Los productos vencidos no se muestran en el inventario.")
+        if producto in productos:
+            try:
+                cantidad_vendida = int(input("Ingrese la cantidad vendida: "))
+                if cantidad_vendida < 0:
+                    print("La cantidad vendida no puede ser negativa.")
+                    return
+                if cantidad_vendida > productos[producto]["Cantidad"]:
+                    print("No hay suficiente inventario para esta venta.")
+                    return
+                productos[producto]["Cantidad"] -= cantidad_vendida
+                total = cantidad_vendida * productos[producto]["Precio"]
+                fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                historial_ventas.append({
+                    "Producto": producto,
+                    "Cantidad": cantidad_vendida,
+                    "Total": total,
+                    "Fecha": fecha
+                })
+                print(f"Venta registrada: {cantidad_vendida} x '{producto}' = ${total:.2f}")
+                return
+            except ValueError:
+                print("Cantidad inválida.")
+                return
+    print("Producto no encontrado.")
+
+# Ver historial de ventas
+def ver_historial_ventas():
+    if not historial_ventas:
+        print("No hay ventas registradas.")
+        return
+
+    print("\n--- Historial de Ventas ---")
+    print("{:<20} {:<10} {:<10} {:<20}".format("Producto", "Cantidad", "Total", "Fecha"))
+    for venta in historial_ventas:
+        print("{:<20} {:<10} {:<10.2f} {:<20}".format(
+            venta['Producto'], venta['Cantidad'], venta['Total'], venta['Fecha']
+        ))

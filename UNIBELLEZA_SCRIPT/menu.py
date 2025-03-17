@@ -1,3 +1,4 @@
+# MOSTRAR MENÚ
 def mostrar_menu():
     print("\n--- Menú de Inventario ---")
     print("1. Agregar producto")
@@ -7,4 +8,6 @@ def mostrar_menu():
     print("5. Eliminar producto")
     print("6. Buscar producto")
     print("7. Registrar usuario")
-    print("8. Salir")
+    print("8. Registrar venta")
+    print("9. Ver historial de ventas")
+    print("10. Salir")

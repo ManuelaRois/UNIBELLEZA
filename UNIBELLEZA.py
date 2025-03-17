@@ -26,22 +26,25 @@ inventario = {
         "esmalte rojo": {"Cantidad": 20, "Precio": 20, "Vencimiento": "N/A"},
         "esmalte nude": {"Cantidad": 18, "Precio": 25, "Vencimiento": "N/A"},
         "quitaesmalte": {"Cantidad": 15, "Precio": 15, "Vencimiento": "N/A"},
-        "lima de uñas": {"Cantidad": 25, "Precio": 10, "Vencimiento": "N/A"},}
+        "lima de uñas": {"Cantidad": 25, "Precio": 10, "Vencimiento": "N/A"}
     },
     "accesorios": {
-        "brocha para base": {"Cantidad": 10, "Precio": 35, "Vencimiento": "N/A"},},
+        "brocha para base": {"Cantidad": 10, "Precio": 35, "Vencimiento": "N/A"},
         "esponja de maquillaje": {"Cantidad": 15, "Precio": 20, "Vencimiento": "N/A"},
         "pinza para cejas": {"Cantidad": 8, "Precio": 15, "Vencimiento": "N/A"},
         "cepillo para pestañas": {"Cantidad": 10, "Precio": 12, "Vencimiento": "N/A"},
         "neceser de maquillaje": {"Cantidad": 5, "Precio": 100, "Vencimiento": "N/A"},
     }
-
+}
 
 # Diccionario para almacenar usuarios registrados
 usuarios = {}
 
+# Historial de ventas
+historial_ventas = []
+
 # REGISTRAR USUARIO
-def registrar_usuario(usuarios): 
+def registrar_usuario(usuarios):
     nombre = input("Ingrese su nombre: ")
     correo = input("Ingrese su correo electrónico: ")
 
@@ -51,10 +54,11 @@ def registrar_usuario(usuarios):
         usuarios[correo] = nombre
         print(f"Usuario '{nombre}' registrado correctamente.")
 
+# VER INVENTARIO
 def ver_inventario(inventario, usuarios):
     """Muestra el inventario con fechas de vencimiento y aplica descuento si el usuario está registrado."""
     hoy = datetime.now().date()
-    correo_usuario = input("Ingrese su correo electrónico (o presione Enter si no está registrado): ") 
+    correo_usuario = input("Ingrese su correo electrónico (o presione Enter si no está registrado): ")
     descuento = 0.10 if correo_usuario in usuarios else 0
 
     print("\n--- Inventario ---")
@@ -71,7 +75,7 @@ def ver_inventario(inventario, usuarios):
             else:
                 vencimiento = "Sin vencimiento"
             print("{:<25} {:<10} {:>10.2f} {:>15}".format(producto, detalles['Cantidad'], precio_con_descuento, vencimiento))
-    
+
     if descuento > 0:
         print("\n¡Se aplicó un descuento del 10% por estar registrado!🩷")
     print("\nNota: Los productos vencidos no se muestran en el inventario.")
@@ -90,7 +94,7 @@ def buscar_producto(inventario):
             print(f"Precio: ${detalles['Precio']:.2f}")
             encontrado = True
             break
-    
+
     if not encontrado:
         print(f"El producto '{producto}' no existe en el inventario.")
 
@@ -105,7 +109,7 @@ def agregar_producto(inventario):
     if producto in inventario[categoria]:
         print("El producto ya existe.")
         return
-    
+
     try:
         cantidad = int(input("Ingrese la cantidad: "))
         precio = float(input("Ingrese el precio unitario: "))
@@ -150,11 +154,8 @@ def eliminar_producto(inventario):
             return
     print(f"El producto '{producto}' no existe en el inventario.")
 
-# Historial de ventas
-historial_ventas = []
-
-# Registrar venta
-def registrar_venta(inventario):
+# REGISTRAR VENTA
+def registrar_venta(inventario, usuarios):
     producto = input("Ingrese el nombre del producto vendido: ").lower()
     for categoria, productos in inventario.items():
         if producto in productos:
@@ -169,30 +170,40 @@ def registrar_venta(inventario):
                 productos[producto]["Cantidad"] -= cantidad_vendida
                 total = cantidad_vendida * productos[producto]["Precio"]
                 fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+                # Solicitar el correo del usuario que realiza la venta
+                correo_usuario = input("Ingrese el correo electrónico del usuario que realiza la venta: ")
+                if correo_usuario in usuarios:
+                    nombre_usuario = usuarios[correo_usuario]
+                else:
+                    nombre_usuario = "Usuario no registrado"
+
+                # Agregar el usuario al registro de ventas
                 historial_ventas.append({
                     "Producto": producto,
                     "Cantidad": cantidad_vendida,
                     "Total": total,
-                    "Fecha": fecha
+                    "Fecha": fecha,
+                    "Usuario": nombre_usuario
                 })
-                print(f"Venta registrada: {cantidad_vendida} x '{producto}' = ${total:.2f}")
+                print(f"Venta registrada: {cantidad_vendida} x '{producto}' = ${total:.2f} (Vendido por: {nombre_usuario})")
                 return
             except ValueError:
                 print("Cantidad inválida.")
                 return
     print("Producto no encontrado.")
 
-# Ver historial de ventas
+# VER HISTORIAL DE VENTAS
 def ver_historial_ventas():
     if not historial_ventas:
         print("No hay ventas registradas.")
         return
 
     print("\n--- Historial de Ventas ---")
-    print("{:<20} {:<10} {:<10} {:<20}".format("Producto", "Cantidad", "Total", "Fecha"))
+    print("{:<20} {:<10} {:<10} {:<20} {:<20}".format("Producto", "Cantidad", "Total", "Fecha", "Usuario"))
     for venta in historial_ventas:
-        print("{:<20} {:<10} {:<10.2f} {:<20}".format(
-            venta['Producto'], venta['Cantidad'], venta['Total'], venta['Fecha']
+        print("{:<20} {:<10} {:<10.2f} {:<20} {:<20}".format(
+            venta['Producto'], venta['Cantidad'], venta['Total'], venta['Fecha'], venta['Usuario']
         ))
 
 # MOSTRAR MENÚ
@@ -218,7 +229,7 @@ opciones = {
     '5': lambda: eliminar_producto(inventario),
     '6': lambda: buscar_producto(inventario),
     '7': lambda: registrar_usuario(usuarios),
-    '8': lambda: registrar_venta(inventario),
+    '8': lambda: registrar_venta(inventario, usuarios),
     '9': lambda: ver_historial_ventas()
 }
 
@@ -228,7 +239,7 @@ def main():
         mostrar_menu()
         opcion = input("\nSeleccione una opción: ")
         if opcion == "10":
-            print("Saliendo del sistema...")
+            print("Saliendo del sistema...¡Gracias por visitarnos!")
             break
         if opcion in opciones:
             opciones[opcion]()  # Ejecuta la función correspondiente

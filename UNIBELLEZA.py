@@ -36,7 +36,7 @@ inventario = {
     }
 }
 
-# Diccionario para almacenar usuarios registrados
+# Diccionario para almacenar usuarios registrados con información adicional
 usuarios = {}
 
 # Historial de ventas
@@ -57,7 +57,6 @@ def registrar_usuario(usuarios):
 
 # VER INVENTARIO
 def ver_inventario(inventario, usuarios):
-    """Muestra el inventario con fechas de vencimiento y aplica descuento si el usuario está registrado."""
     hoy = datetime.now().date()
     correo_usuario = input("Ingrese su correo electrónico (o presione Enter si no está registrado): ")
     descuento = 0.10 if correo_usuario in usuarios else 0
@@ -81,81 +80,6 @@ def ver_inventario(inventario, usuarios):
         print("\n¡Se aplicó un descuento del 10% por estar registrado!🩷")
     print("\nNota: Los productos vencidos no se muestran en el inventario.")
 
-# BUSCAR PRODUCTO
-def buscar_producto(inventario):
-    producto = input("Ingrese el nombre del producto a buscar: ").lower()
-    encontrado = False
-
-    for categoria, productos in inventario.items():
-        if producto in productos:
-            detalles = productos[producto]
-            print(f"\n--- Detalles de '{producto}' ---")
-            print(f"Categoría: {categoria.capitalize()}")
-            print(f"Cantidad: {detalles['Cantidad']}")
-            print(f"Precio: ${detalles['Precio']:.2f}")
-            encontrado = True
-            break
-
-    if not encontrado:
-        print(f"El producto '{producto}' no existe en el inventario.")
-
-# AGREGAR PRODUCTO
-def agregar_producto(inventario):
-    categoria = input("Ingrese la categoría: ").lower()
-    if categoria not in inventario:
-        print("Categoría inválida.")
-        return
-
-    producto = input("Ingrese el nombre del producto: ").lower()
-    if producto in inventario[categoria]:
-        print("El producto ya existe.")
-        return
-
-    try:
-        cantidad = int(input("Ingrese la cantidad: "))
-        precio = float(input("Ingrese el precio unitario: "))
-        if cantidad < 0 or precio < 0:
-            raise ValueError
-    except ValueError:
-        print("La cantidad y el precio deben ser valores positivos.")
-        return
-
-    inventario[categoria][producto] = {"Cantidad": cantidad, "Precio": precio}
-    print(f"Producto '{producto}' agregado correctamente.")
-
-# ACTUALIZAR CANTIDAD
-def actualizar_cantidad(inventario):
-    producto = input("Ingrese el nombre del producto: ").lower()
-    for categoria, productos in inventario.items():
-        if producto in productos:
-            nueva_cantidad = int(input("Ingrese la nueva cantidad: "))
-            productos[producto]['Cantidad'] = nueva_cantidad
-            print(f"Cantidad de '{producto}' actualizada a {nueva_cantidad}.")
-            return
-    print(f"El producto '{producto}' no existe en el inventario.")
-
-# ACTUALIZAR PRECIO
-def actualizar_precio(inventario):
-    producto = input("Ingrese el nombre del producto: ").lower()
-    for categoria, productos in inventario.items():
-        if producto in productos:
-            nuevo_precio = float(input("Ingrese el nuevo precio: "))
-            productos[producto]['Precio'] = nuevo_precio
-            print(f"Precio de '{producto}' actualizado a ${nuevo_precio:.2f}.")
-            return
-    print(f"El producto '{producto}' no existe en el inventario.")
-
-# ELIMINAR PRODUCTO
-def eliminar_producto(inventario):
-    producto = input("Ingrese el nombre del producto: ").lower()
-    for categoria, productos in inventario.items():
-        if producto in productos:
-            del productos[producto]
-            print(f"Producto '{producto}' eliminado.")
-            return
-    print(f"El producto '{producto}' no existe en el inventario.")
-
-# REGISTRAR VENTA
 def registrar_venta(inventario, usuarios):
     producto = input("Ingrese el nombre del producto vendido: ").lower()
     for categoria, productos in inventario.items():
@@ -172,12 +96,16 @@ def registrar_venta(inventario, usuarios):
                 total = cantidad_vendida * productos[producto]["Precio"]
                 fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-                # Solicitar el correo del usuario que realiza la venta
-                correo_usuario = input("Ingrese el correo electrónico del usuario que realiza la venta: ")
+                # Solicitar el correo del usuario que realizo la compra
+                correo_usuario = input("Ingrese el correo electrónico del usuario que realizo la compra: ")
                 if correo_usuario in usuarios:
                     nombre_usuario = usuarios[correo_usuario]["nombre"]
+                    telefono_usuario = usuarios[correo_usuario]["telefono"]
+                    direccion_usuario = usuarios[correo_usuario]["direccion"]
                 else:
                     nombre_usuario = "Usuario no registrado"
+                    telefono_usuario = "N/A"
+                    direccion_usuario = "N/A"
 
                 # Agregar el usuario al registro de ventas
                 historial_ventas.append({
@@ -185,14 +113,75 @@ def registrar_venta(inventario, usuarios):
                     "Cantidad": cantidad_vendida,
                     "Total": total,
                     "Fecha": fecha,
-                    "Usuario": nombre_usuario
+                    "Usuario": nombre_usuario,
+                    "Correo": correo_usuario,
+                    "Telefono": telefono_usuario,
+                    "Direccion": direccion_usuario
                 })
-                print(f"Venta registrada: {cantidad_vendida} x '{producto}' = ${total:.2f} (Vendido por: {nombre_usuario})")
+                print(f"Venta registrada: {cantidad_vendida} x '{producto}' = ${total:.2f} (Vendido por: {nombre_usuario}, Teléfono: {telefono_usuario}, Dirección: {direccion_usuario})")
                 return
             except ValueError:
                 print("Cantidad inválida.")
                 return
     print("Producto no encontrado.")
+
+# AGREGAR PRODUCTO
+def agregar_producto(inventario):
+    categoria = input("Ingrese la categoría del producto: ").lower()
+    producto = input("Ingrese el nombre del producto: ").lower()
+    cantidad = int(input("Ingrese la cantidad del producto: "))
+    precio = float(input("Ingrese el precio del producto: "))
+    vencimiento = input("Ingrese la fecha de vencimiento del producto (YYYY-MM-DD) o 'N/A' si no aplica: ")
+
+    if categoria not in inventario:
+        inventario[categoria] = {}
+    inventario[categoria][producto] = {"Cantidad": cantidad, "Precio": precio, "Vencimiento": vencimiento}
+    print(f"Producto '{producto}' agregado correctamente en la categoría '{categoria}'.")
+
+# ACTUALIZAR CANTIDAD DE PRODUCTO
+def actualizar_cantidad(inventario):
+    categoria = input("Ingrese la categoría del producto: ").lower()
+    producto = input("Ingrese el nombre del producto: ").lower()
+    if categoria in inventario and producto in inventario[categoria]:
+        nueva_cantidad = int(input("Ingrese la nueva cantidad del producto: "))
+        inventario[categoria][producto]["Cantidad"] = nueva_cantidad
+        print(f"Cantidad del producto '{producto}' actualizada a {nueva_cantidad}.")
+    else:
+        print("Producto no encontrado en el inventario.")
+
+# ACTUALIZAR PRECIO DE PRODUCTO
+def actualizar_precio(inventario):
+    categoria = input("Ingrese la categoría del producto: ").lower()
+    producto = input("Ingrese el nombre del producto: ").lower()
+    if categoria in inventario and producto in inventario[categoria]:
+        nuevo_precio = float(input("Ingrese el nuevo precio del producto: "))
+        inventario[categoria][producto]["Precio"] = nuevo_precio
+        print(f"Precio del producto '{producto}' actualizado a {nuevo_precio}.")
+    else:
+        print("Producto no encontrado en el inventario.")
+
+# ELIMINAR PRODUCTO
+def eliminar_producto(inventario):
+    categoria = input("Ingrese la categoría del producto: ").lower()
+    producto = input("Ingrese el nombre del producto: ").lower()
+    if categoria in inventario and producto in inventario[categoria]:
+        del inventario[categoria][producto]
+        print(f"Producto '{producto}' eliminado de la categoría '{categoria}'.")
+    else:
+        print("Producto no encontrado en el inventario.")
+
+# BUSCAR PRODUCTO
+def buscar_producto(inventario):
+    producto = input("Ingrese el nombre del producto a buscar: ").lower()
+    encontrado = False
+    for categoria, productos in inventario.items():
+        if producto in productos:
+            detalles = productos[producto]
+            print(f"Producto encontrado en la categoría '{categoria}': {detalles}")
+            encontrado = True
+            break
+    if not encontrado:
+        print("Producto no encontrado en el inventario.")
 
 # VER HISTORIAL DE VENTAS
 def ver_historial_ventas():
@@ -201,10 +190,10 @@ def ver_historial_ventas():
         return
 
     print("\n--- Historial de Ventas ---")
-    print("{:<20} {:<10} {:<10} {:<20} {:<20}".format("Producto", "Cantidad", "Total", "Fecha", "Usuario"))
+    print("{:<20} {:<10} {:<10} {:<20} {:<20} {:<25} {:<20}".format("Producto", "Cantidad", "Total", "Fecha", "Usuario", "Correo", "Teléfono", "Dirección"))
     for venta in historial_ventas:
-        print("{:<20} {:<10} {:<10.2f} {:<20} {:<20}".format(
-            venta['Producto'], venta['Cantidad'], venta['Total'], venta['Fecha'], venta['Usuario']
+        print("{:<20} {:<10} {:<10.2f} {:<20} {:<20} {:<25} {:<20}".format(
+            venta['Producto'], venta['Cantidad'], venta['Total'], venta['Fecha'], venta['Usuario'], venta['Correo'], venta['Telefono'], venta['Direccion']
         ))
 
 # MOSTRAR MENÚ

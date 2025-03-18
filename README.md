@@ -42,7 +42,7 @@ python main.py
 
 🌟 Requisitos
 
-❥ Python 3.8 #VERIFICAR VERSION DE PYTHON 
+❥ Python 2025.2.0 
 
 🖥️ Tecnologías utilizadas
 🐍 Python

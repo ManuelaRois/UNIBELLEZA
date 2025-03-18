@@ -69,9 +69,13 @@ def ver_inventario(inventario, usuarios):
             precio_con_descuento = detalles['Precio'] * (1 - descuento)
             vencimiento = detalles.get("Vencimiento", "N/A")
             if vencimiento != "N/A":
-                fecha_venc = datetime.strptime(vencimiento, "%Y-%m-%d").date()
-                if fecha_venc < hoy:
-                    continue  # Omitir productos vencidos
+                try:
+                    fecha_venc = datetime.strptime(vencimiento, "%Y-%m-%d").date()
+                    if fecha_venc < hoy:
+                        continue  # Omitir productos vencidos
+                except ValueError:
+                    print(f"Error en la fecha de vencimiento del producto '{producto}'. Formato incorrecto.")
+                    continue
             else:
                 vencimiento = "Sin vencimiento"
             print("{:<25} {:<10} {:>10.2f} {:>15}".format(producto, detalles['Cantidad'], precio_con_descuento, vencimiento))
@@ -80,6 +84,7 @@ def ver_inventario(inventario, usuarios):
         print("\n¡Se aplicó un descuento del 10% por estar registrado!🩷")
     print("\nNota: Los productos vencidos no se muestran en el inventario.")
 
+# REGISTRAR VENTA
 def registrar_venta(inventario, usuarios):
     producto = input("Ingrese el nombre del producto vendido: ").lower()
     for categoria, productos in inventario.items():
@@ -90,14 +95,14 @@ def registrar_venta(inventario, usuarios):
                     print("La cantidad vendida no puede ser negativa.")
                     return
                 if cantidad_vendida > productos[producto]["Cantidad"]:
-                    print("No hay suficiente inventario para esta venta.")
+                    print(f"No hay suficiente inventario para esta venta. Solo hay {productos[producto]['Cantidad']} unidades disponibles.")
                     return
                 productos[producto]["Cantidad"] -= cantidad_vendida
                 total = cantidad_vendida * productos[producto]["Precio"]
                 fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-                # Solicitar el correo del usuario que realizo la compra
-                correo_usuario = input("Ingrese el correo electrónico del usuario que realizo la compra: ")
+                # Solicitar el correo del usuario que realizó la compra
+                correo_usuario = input("Ingrese el correo electrónico del usuario que realizó la compra: ")
                 if correo_usuario in usuarios:
                     nombre_usuario = usuarios[correo_usuario]["nombre"]
                     telefono_usuario = usuarios[correo_usuario]["telefono"]
@@ -121,7 +126,7 @@ def registrar_venta(inventario, usuarios):
                 print(f"Venta registrada: {cantidad_vendida} x '{producto}' = ${total:.2f} (Vendido por: {nombre_usuario}, Teléfono: {telefono_usuario}, Dirección: {direccion_usuario})")
                 return
             except ValueError:
-                print("Cantidad inválida.")
+                print("Cantidad inválida. Por favor, ingrese un número entero.")
                 return
     print("Producto no encontrado.")
 
@@ -129,8 +134,12 @@ def registrar_venta(inventario, usuarios):
 def agregar_producto(inventario):
     categoria = input("Ingrese la categoría del producto: ").lower()
     producto = input("Ingrese el nombre del producto: ").lower()
-    cantidad = int(input("Ingrese la cantidad del producto: "))
-    precio = float(input("Ingrese el precio del producto: "))
+    try:
+        cantidad = int(input("Ingrese la cantidad del producto: "))
+        precio = float(input("Ingrese el precio del producto: "))
+    except ValueError:
+        print("Entrada inválida. Por favor, ingrese números válidos.")
+        return
     vencimiento = input("Ingrese la fecha de vencimiento del producto (YYYY-MM-DD) o 'N/A' si no aplica: ")
 
     if categoria not in inventario:
@@ -143,9 +152,15 @@ def actualizar_cantidad(inventario):
     categoria = input("Ingrese la categoría del producto: ").lower()
     producto = input("Ingrese el nombre del producto: ").lower()
     if categoria in inventario and producto in inventario[categoria]:
-        nueva_cantidad = int(input("Ingrese la nueva cantidad del producto: "))
-        inventario[categoria][producto]["Cantidad"] = nueva_cantidad
-        print(f"Cantidad del producto '{producto}' actualizada a {nueva_cantidad}.")
+        try:
+            nueva_cantidad = int(input("Ingrese la nueva cantidad del producto: "))
+            if nueva_cantidad < 0:
+                print("La cantidad no puede ser negativa.")
+                return
+            inventario[categoria][producto]["Cantidad"] = nueva_cantidad
+            print(f"Cantidad del producto '{producto}' actualizada a {nueva_cantidad}.")
+        except ValueError:
+            print("Entrada inválida. Por favor, ingrese un número entero.")
     else:
         print("Producto no encontrado en el inventario.")
 
@@ -154,9 +169,15 @@ def actualizar_precio(inventario):
     categoria = input("Ingrese la categoría del producto: ").lower()
     producto = input("Ingrese el nombre del producto: ").lower()
     if categoria in inventario and producto in inventario[categoria]:
-        nuevo_precio = float(input("Ingrese el nuevo precio del producto: "))
-        inventario[categoria][producto]["Precio"] = nuevo_precio
-        print(f"Precio del producto '{producto}' actualizado a {nuevo_precio}.")
+        try:
+            nuevo_precio = float(input("Ingrese el nuevo precio del producto: "))
+            if nuevo_precio < 0:
+                print("El precio no puede ser negativo.")
+                return
+            inventario[categoria][producto]["Precio"] = nuevo_precio
+            print(f"Precio del producto '{producto}' actualizado a {nuevo_precio}.")
+        except ValueError:
+            print("Entrada inválida. Por favor, ingrese un número válido.")
     else:
         print("Producto no encontrado en el inventario.")
 

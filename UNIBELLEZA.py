@@ -1,4 +1,3 @@
-
 from datetime import datetime
 
 # Diccionario para almacenar el inventario con categorías
@@ -47,11 +46,13 @@ historial_ventas = []
 def registrar_usuario(usuarios):
     nombre = input("Ingrese su nombre: ")
     correo = input("Ingrese su correo electrónico: ")
+    telefono = input("Ingrese su número de teléfono: ")
+    direccion = input("Ingrese su dirección: ")
 
     if correo in usuarios:
         print(f"El correo '{correo}' ya está registrado.")
     else:
-        usuarios[correo] = nombre
+        usuarios[correo] = {"nombre": nombre, "telefono": telefono, "direccion": direccion}
         print(f"Usuario '{nombre}' registrado correctamente.")
 
 # VER INVENTARIO
@@ -174,7 +175,7 @@ def registrar_venta(inventario, usuarios):
                 # Solicitar el correo del usuario que realiza la venta
                 correo_usuario = input("Ingrese el correo electrónico del usuario que realiza la venta: ")
                 if correo_usuario in usuarios:
-                    nombre_usuario = usuarios[correo_usuario]
+                    nombre_usuario = usuarios[correo_usuario]["nombre"]
                 else:
                     nombre_usuario = "Usuario no registrado"
 

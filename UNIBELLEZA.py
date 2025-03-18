@@ -246,6 +246,9 @@ opciones = {
 
 # EJECUTAR MENÚ
 def main():
+    print("¡Bienvenido al sistema de gestión de inventario! 💄✨")
+    print("Aquí podrás gestionar tu inventario, registrar ventas, usuarios y mucho más.\n")
+    
     while True:
         mostrar_menu()
         opcion = input("\nSeleccione una opción: ")

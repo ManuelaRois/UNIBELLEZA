@@ -40,8 +40,7 @@ inventario = {
 # Historial de ventas
 historial_ventas = []
 
-# Registrar venta
-def registrar_venta():
+def registrar_venta(inventario, usuarios):
     producto = input("Ingrese el nombre del producto vendido: ").lower()
     for categoria, productos in inventario.items():
         if producto in productos:
@@ -57,12 +56,16 @@ def registrar_venta():
                 total = cantidad_vendida * productos[producto]["Precio"]
                 fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-                # Solicitar el correo del usuario que realiza la venta
-                correo_usuario = input("Ingrese el correo electrónico del usuario que realiza la venta: ")
+                # Solicitar el correo del usuario que realizo la compra
+                correo_usuario = input("Ingrese el correo electrónico del usuario que realizo la compra: ")
                 if correo_usuario in usuarios:
-                    nombre_usuario = usuarios[correo_usuario]
+                    nombre_usuario = usuarios[correo_usuario]["nombre"]
+                    telefono_usuario = usuarios[correo_usuario]["telefono"]
+                    direccion_usuario = usuarios[correo_usuario]["direccion"]
                 else:
                     nombre_usuario = "Usuario no registrado"
+                    telefono_usuario = "N/A"
+                    direccion_usuario = "N/A"
 
                 # Agregar el usuario al registro de ventas
                 historial_ventas.append({
@@ -70,24 +73,14 @@ def registrar_venta():
                     "Cantidad": cantidad_vendida,
                     "Total": total,
                     "Fecha": fecha,
-                    "Usuario": nombre_usuario
+                    "Usuario": nombre_usuario,
+                    "Correo": correo_usuario,
+                    "Telefono": telefono_usuario,
+                    "Direccion": direccion_usuario
                 })
-                print(f"Venta registrada: {cantidad_vendida} x '{producto}' = ${total:.2f} (Vendido por: {nombre_usuario})")
+                print(f"Venta registrada: {cantidad_vendida} x '{producto}' = ${total:.2f} (Vendido por: {nombre_usuario}, Teléfono: {telefono_usuario}, Dirección: {direccion_usuario})")
                 return
             except ValueError:
                 print("Cantidad inválida.")
                 return
     print("Producto no encontrado.")
-
-# Ver historial de ventas
-def ver_historial_ventas():
-    if not historial_ventas:
-        print("No hay ventas registradas.")
-        return
-
-    print("\n--- Historial de Ventas ---")
-    print("{:<20} {:<10} {:<10} {:<20} {:<20}".format("Producto", "Cantidad", "Total", "Fecha", "Usuario"))
-    for venta in historial_ventas:
-        print("{:<20} {:<10} {:<10.2f} {:<20} {:<20}".format(
-            venta['Producto'], venta['Cantidad'], venta['Total'], venta['Fecha'], venta['Usuario']
-        ))

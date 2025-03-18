@@ -2,7 +2,7 @@ from datetime import datetime
 
 # Diccionario para almacenar el inventario con categorías
 inventario = {
-    "maquillaje": {
+    "maquillaje 💄": {
         "lapiz delineador": {"Cantidad": 7, "Precio": 40, "Vencimiento": "2025-08-15"},
         "paleta de sombras": {"Cantidad": 10, "Precio": 250, "Vencimiento": "2026-02-10"},
         "base liquida": {"Cantidad": 5, "Precio": 30, "Vencimiento": "2024-12-30"},
@@ -13,7 +13,7 @@ inventario = {
         "rubor en polvo": {"Cantidad": 8, "Precio": 45, "Vencimiento": "2026-07-18"},
         "primer facial": {"Cantidad": 6, "Precio": 60, "Vencimiento": "2026-03-22"}
     },
-    "skincare": {
+    "skincare💆🏻‍♀️": {
         "crema hidratante": {"Cantidad": 20, "Precio": 80, "Vencimiento": "2026-01-20"},
         "serum vitamina C": {"Cantidad": 10, "Precio": 100, "Vencimiento": "2025-11-05"},
         "protector solar SPF 50": {"Cantidad": 15, "Precio": 90, "Vencimiento": "2025-07-15"},
@@ -21,13 +21,13 @@ inventario = {
         "agua micelar": {"Cantidad": 18, "Precio": 50, "Vencimiento": "2026-08-05"},
         "aceite limpiador": {"Cantidad": 10, "Precio": 65, "Vencimiento": "2025-09-01"}
     },
-    "uñas": {
+    "uñas 💅": {
         "esmalte rojo": {"Cantidad": 20, "Precio": 20, "Vencimiento": "N/A"},
         "esmalte nude": {"Cantidad": 18, "Precio": 25, "Vencimiento": "N/A"},
         "quitaesmalte": {"Cantidad": 15, "Precio": 15, "Vencimiento": "N/A"},
         "lima de uñas": {"Cantidad": 25, "Precio": 10, "Vencimiento": "N/A"}
     },
-    "accesorios": {
+    "accesorios 💍": {
         "brocha para base": {"Cantidad": 10, "Precio": 35, "Vencimiento": "N/A"},
         "esponja de maquillaje": {"Cantidad": 15, "Precio": 20, "Vencimiento": "N/A"},
         "pinza para cejas": {"Cantidad": 8, "Precio": 15, "Vencimiento": "N/A"},

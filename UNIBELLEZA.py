@@ -250,7 +250,7 @@ def main():
         mostrar_menu()
         opcion = input("\nSeleccione una opción: ")
         if opcion == "10":
-            print("Saliendo del sistema...¡Gracias por visitarnos!")
+            print("Saliendo del sistema...¡Gracias por visitarnos 💋!")
             break
         if opcion in opciones:
             opciones[opcion]()  # Ejecuta la función correspondiente

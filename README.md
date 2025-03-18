@@ -1,4 +1,4 @@
-# 💄 Unibelleza - Sistema de Inventario para Tienda de Maquillaje
+# 💄 Unibelleza - Sistema de Inventario para Tienda de Maquillaje #
 Unibelleza es un sistema de inventario para una tienda de maquillaje que permite registrar, buscar, actualizar y eliminar productos, así como gestionar usuarios y realizar ventas.
 ---
 

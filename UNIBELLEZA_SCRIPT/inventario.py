@@ -78,7 +78,7 @@ def registrar_venta(inventario, usuarios):
                     "Telefono": telefono_usuario,
                     "Direccion": direccion_usuario
                 })
-                print(f"Venta registrada: {cantidad_vendida} x '{producto}' = ${total:.2f} (Vendido por: {nombre_usuario}, Teléfono: {telefono_usuario}, Dirección: {direccion_usuario})")
+                print(f"Venta registrada: {cantidad_vendida} x '{producto}' = ${total:.2f} (Vendido a: {nombre_usuario}, Teléfono: {telefono_usuario}, Dirección: {direccion_usuario})")
                 return
             except ValueError:
                 print("Cantidad inválida.")

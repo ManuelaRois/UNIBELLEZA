@@ -50,7 +50,9 @@ python main.py
 
 ✨ **Autoras**  
 | Nombre | GitHub | Contacto |
-| Manuela Rois | [@ManuelaRois] (https://github.com/ManuelaRois) | ✉️ [manuela.rois@upb.edu.com.co]
+| Manuela Rois Rengifo | [@ManuelaRois] (https://github.com/ManuelaRois) | ✉️ [manuela.rois@upb.edu.com.co]
+| Maria Antonia Montoya | [@marimontoya999] [(https://github.com/marimontoya999)| ✉️ [mariaa.montoyas@upb.edu.co]
+
 
 
 ---

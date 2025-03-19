@@ -42,7 +42,7 @@ python main.py
 
 🌟 Requisitos
 
-❥ Python 2025.2.0 
+❥ Python 3.13 
 
 🖥️ Tecnologías utilizadas
 🐍 Python
@@ -50,7 +50,6 @@ python main.py
 
 ✨ **Autoras**  
 | Nombre | GitHub | Contacto |
-| Maria Antonia Montoya |[@marimontoya999] (https://github.com/marimontoya999)|✉️ [mariaa.montoyas@upb.edu.co]| 
 | Manuela Rois | [@ManuelaRois] (https://github.com/ManuelaRois) | ✉️ [manuela.rois@upb.edu.com.co]
 
 
